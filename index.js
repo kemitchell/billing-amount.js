@@ -43,15 +43,17 @@ function spanAmount(year, month, span) {
     return round(
       divide(subtract(end, start), MILLISECONDS_PER_MINUTE)) }
 
-  // Span is outside the relevant month.
   else { return 0 } }
 
 function entryAmount(year, month, entry) {
 
   // Entry gives number of billable hours.
   if ('time' in entry) {
+
+    // Entry is within the relevant month.
     if (dateMatches(year, month, new Date(entry.date))) {
       return round.down(multiply(entry.time, entry.rate), 1) }
+
     else { return 0 } }
 
   // Entry lists spans of billable time.
@@ -63,6 +65,7 @@ function entryAmount(year, month, entry) {
           divide(
             // Round billable minutes.
             round(
+              // Sum time spans.
               entry.spans.reduce(
                 function(total, span) {
                   return add(total, spanAmount(year, month, span)) },
@@ -76,9 +79,11 @@ module.exports = function(year, month, project) {
   // Bill per a a flat estimate.
   if (project.method === 'estimate') {
     var complete = new Date(project.completed)
+
     // Was the project completed in the relevant month?
     if (complete && dateMatches(year, month, complete)) {
       return project.estimate }
+
     else { return 0 } }
 
   // Bill time on the project.
