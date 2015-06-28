@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "tape": "4.x"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "round": "~2.0.0"
+  }
+}
