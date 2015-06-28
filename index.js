@@ -88,7 +88,9 @@ module.exports = function(year, month, project) {
 
   // Bill time on the project.
   else {
-    return project.service.reduce(
-      function(entryTotal, entry) {
-        return add(entryTotal, entryAmount(year, month, entry)) },
-      0) } }
+    return Math.min(
+      project.service.reduce(
+        function(entryTotal, entry) {
+          return add(entryTotal, entryAmount(year, month, entry)) },
+        0),
+      project.cap || Infinity) } }

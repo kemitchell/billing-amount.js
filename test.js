@@ -18,7 +18,7 @@ require('tape')(function(test) {
         estimate: 500,
         completed: '2015-06-28' }),
     0,
-    'amount for project completed outside the month is zero')
+    'amount for project completed outside the month is zer')
 
   test.equal(
     amount(
@@ -31,6 +31,19 @@ require('tape')(function(test) {
             rate: 100 } ] }),
     100,
     'amount for hourly project is time multiplied by rate')
+
+  test.equal(
+    amount(
+      2015, 6,
+      { method: 'hourly',
+        cap: 50,
+        service: [
+          { spans: [
+              { start: '2015-06-28 08:00',
+                end:   '2015-06-28 09:00' } ],
+            rate: 100 } ] }),
+    50,
+    'amount for capped hourly project limited to cap')
 
   test.equal(
     amount(
