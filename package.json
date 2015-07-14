@@ -1,6 +1,6 @@
 {
   "name": "@kemitchell/billing-amount",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "calculate the amount due for a project in a given month",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (http://kemitchell.com/)",
   "repository": "kemitchell/billing-amount.js",
