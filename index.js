@@ -48,32 +48,28 @@ function entryAmount(from, through, entry) {
     var date = Date.parse(entry.date)
 
     if (date >= from && date <= through) {
-      return round.down(
-        multiply(
-          add(entry.time, entry.adjustment),
-          entry.rate),
-        1) }
+      return multiply(
+        add(entry.time, entry.adjustment),
+        entry.rate) }
 
     else { return 0 } }
 
   // Entry lists spans of billable time.
   else {
     return (
-      round.down(
-        multiply(
-          entry.rate,
-          divide(
-            // Round billable minutes.
-            round(
-              // Sum time spans.
-              entry.spans
-                .reduce(
-                  function(total, span) {
-                    return add(total, spanAmount(from, through, span)) },
-                  0),
-              BILLING_INCREMENT),
-            MINUTES_PER_HOUR)),
-        1)) } }
+      multiply(
+        entry.rate,
+        divide(
+          // Round billable minutes.
+          round(
+            // Sum time spans.
+            entry.spans
+              .reduce(
+                function(total, span) {
+                  return add(total, spanAmount(from, through, span)) },
+                0),
+            BILLING_INCREMENT),
+          MINUTES_PER_HOUR))) } }
 
 function billingAmount(from, through, project) {
 
