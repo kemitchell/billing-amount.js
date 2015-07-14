@@ -20,7 +20,7 @@ require('tape')(function(test) {
         estimate: 500,
         completed: '2015-06-28' }),
     0,
-    'amount for project completed outside the month is zer')
+    'amount for project completed outside the month is zero')
 
   test.equal(
     amount(
@@ -34,6 +34,19 @@ require('tape')(function(test) {
             rate: 100 } ] }),
     100,
     'amount for hourly project is time multiplied by rate')
+
+  test.equal(
+    amount(
+      new Date('2015-06-01T00:00-0700'),
+      new Date('2015-06-30T23:59-0700'),
+      { method: 'hourly',
+        service: [
+          { time: 0.5,
+            date: '2015-06-02',
+            adjustment: -0.25,
+            rate: 100 } ] }),
+    25,
+    'applies adjustments to flat-amount entries')
 
   test.equal(
     amount(

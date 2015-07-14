@@ -48,7 +48,11 @@ function entryAmount(from, through, entry) {
     var date = Date.parse(entry.date)
 
     if (date >= from && date <= through) {
-      return round.down(multiply(entry.time, entry.rate), 1) }
+      return round.down(
+        multiply(
+          add(entry.time, entry.adjustment),
+          entry.rate),
+        1) }
 
     else { return 0 } }
 
