@@ -26,32 +26,28 @@ function subtract(x, y) { return x - y }
 function multiply(x, y) { return x * y }
 function divide(x, y) { return x / y }
 
-function dateMatches(year, month, date) {
-  return (
-    date.getFullYear() === year &&
-    // getMonth() is zero-indexed.
-    // The month argument is one-indexed.
-    add(date.getMonth(), 1) === month) }
-
-function spanAmount(year, month, span) {
+function spanAmount(from, through, span) {
   var start = new Date(span.start)
+  start = ( start < from ? from : start )
+
   var end = new Date(span.end)
+  end = ( end > through ? through : end )
 
-  // Span is within the relevant month.
-  if (dateMatches(year, month, start) &&
-      dateMatches(year, month, end)) {
+  if (end <= start) {
+    return 0 }
+  else {
     return round(
-      divide(subtract(end, start), MILLISECONDS_PER_MINUTE)) }
+      divide(
+        subtract(end, start),
+        MILLISECONDS_PER_MINUTE)) } }
 
-  else { return 0 } }
-
-function entryAmount(year, month, entry) {
+function entryAmount(from, through, entry) {
 
   // Entry gives number of billable hours.
-  if ('time' in entry) {
+  if (entry.time) {
+    var date = Date.parse(entry.date)
 
-    // Entry is within the relevant month.
-    if (dateMatches(year, month, new Date(entry.date))) {
+    if (date >= from && date <= through) {
       return round.down(multiply(entry.time, entry.rate), 1) }
 
     else { return 0 } }
@@ -66,22 +62,23 @@ function entryAmount(year, month, entry) {
             // Round billable minutes.
             round(
               // Sum time spans.
-              entry.spans.reduce(
-                function(total, span) {
-                  return add(total, spanAmount(year, month, span)) },
-                0),
+              entry.spans
+                .reduce(
+                  function(total, span) {
+                    return add(total, spanAmount(from, through, span)) },
+                  0),
               BILLING_INCREMENT),
             MINUTES_PER_HOUR)),
         1)) } }
 
-module.exports = function(year, month, project) {
+function billingAmount(from, through, project) {
 
   // Bill per a a flat estimate.
   if (project.method === 'estimate') {
-    var complete = new Date(project.completed)
+    var complete = Date.parse(project.completed)
 
     // Was the project completed in the relevant month?
-    if (complete && dateMatches(year, month, complete)) {
+    if (complete && complete >= from && complete <= through) {
       return project.estimate }
 
     else { return 0 } }
@@ -89,8 +86,11 @@ module.exports = function(year, month, project) {
   // Bill time on the project.
   else {
     return Math.min(
-      project.service.reduce(
-        function(entryTotal, entry) {
-          return add(entryTotal, entryAmount(year, month, entry)) },
-        0),
+      project.service
+        .reduce(
+          function(entryTotal, entry) {
+            return add(entryTotal, entryAmount(from, through, entry)) },
+          0),
       project.cap || Infinity) } }
+
+module.exports = billingAmount
