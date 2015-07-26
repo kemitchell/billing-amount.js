@@ -41,7 +41,7 @@ function spanAmount(from, through, span) {
         subtract(end, start),
         MILLISECONDS_PER_MINUTE)) } }
 
-function entryAmount(from, through, entry) {
+function entryAmount(from, through, rate, entry) {
 
   // Entry gives number of billable hours.
   if (entry.time) {
@@ -50,7 +50,7 @@ function entryAmount(from, through, entry) {
     if (date >= from && date <= through) {
       return multiply(
         add(entry.time, entry.adjustment),
-        entry.rate) }
+        rate) }
 
     else { return 0 } }
 
@@ -58,7 +58,7 @@ function entryAmount(from, through, entry) {
   else {
     return (
       multiply(
-        entry.rate,
+        rate,
         divide(
           // Round billable minutes.
           round(
@@ -71,7 +71,7 @@ function entryAmount(from, through, entry) {
             BILLING_INCREMENT),
           MINUTES_PER_HOUR))) } }
 
-function billingAmount(from, through, project) {
+function billingAmount(from, through, rate, project) {
 
   // Bill per a a flat estimate.
   if (project.method === 'estimate') {
@@ -89,7 +89,9 @@ function billingAmount(from, through, project) {
       project.service
         .reduce(
           function(entryTotal, entry) {
-            return add(entryTotal, entryAmount(from, through, entry)) },
+            return add(
+              entryTotal,
+              entryAmount(from, through, rate, entry)) },
           0),
       project.cap || Infinity) } }
 

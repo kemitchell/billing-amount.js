@@ -6,6 +6,7 @@ require('tape')(function(test) {
     amount(
       new Date('2015-06-01T00:00-0700'),
       new Date('2015-06-30T23:59-0700'),
+      100,
       { method: 'estimate',
         estimate: 500,
         completed: '2015-06-28' }),
@@ -16,6 +17,7 @@ require('tape')(function(test) {
     amount(
       new Date('2015-07-01T00:00-0700'),
       new Date('2015-07-31T23:59-0700'),
+      100,
       { method: 'estimate',
         estimate: 500,
         completed: '2015-06-28' }),
@@ -26,12 +28,12 @@ require('tape')(function(test) {
     amount(
       new Date('2015-06-01T00:00-0700'),
       new Date('2015-06-30T23:59-0700'),
+      100,
       { method: 'hourly',
         service: [
           { spans: [
               { start: '2015-06-28T08:00-0700',
-                end:   '2015-06-28T09:00-0700' } ],
-            rate: 100 } ] }),
+                end:   '2015-06-28T09:00-0700' } ] } ] }),
     100,
     'amount for hourly project is time multiplied by rate')
 
@@ -39,12 +41,12 @@ require('tape')(function(test) {
     amount(
       new Date('2015-06-01T00:00-0700'),
       new Date('2015-06-30T23:59-0700'),
+      100,
       { method: 'hourly',
         service: [
           { time: 0.5,
             date: '2015-06-02',
-            adjustment: -0.25,
-            rate: 100 } ] }),
+            adjustment: -0.25 } ] }),
     25,
     'applies adjustments to flat-amount entries')
 
@@ -52,13 +54,13 @@ require('tape')(function(test) {
     amount(
       new Date('2015-06-01T00:00-0700'),
       new Date('2015-06-30T23:59-0700'),
+      100,
       { method: 'hourly',
         cap: 50,
         service: [
           { spans: [
               { start: '2015-06-28T08:00-0700',
-                end:   '2015-06-28T09:00-0700' } ],
-            rate: 100 } ] }),
+                end:   '2015-06-28T09:00-0700' } ] } ] }),
     50,
     'amount for capped hourly project limited to cap')
 
@@ -66,12 +68,12 @@ require('tape')(function(test) {
     amount(
       new Date('2015-07-01T00:00-0700'),
       new Date('2015-07-31T23:59-0700'),
+      100,
       { method: 'hourly',
         service: [
           { spans: [
               { start: '2015-06-28T08:00-0700',
-                end:   '2015-06-28T09:00-0700' } ],
-            rate: 100 } ] }),
+                end:   '2015-06-28T09:00-0700' } ] } ] }),
     0,
     'amount for hourly project outside month is zero')
 
@@ -79,14 +81,14 @@ require('tape')(function(test) {
     amount(
       new Date('2015-06-01T00:00-0700'),
       new Date('2015-06-30T23:59-0700'),
+      100,
       { method: 'hourly',
         service: [
           { spans: [
             { start: '2015-06-28T07:00-0700',
               end:   '2015-06-28T07:07-0700' },
             { start: '2015-06-28T08:00-0700',
-              end:   '2015-06-28T08:07-0700' } ],
-          rate: 100 } ] }),
+              end:   '2015-06-28T08:07-0700' } ] } ] }),
     25,
     'time is rounded')
 
