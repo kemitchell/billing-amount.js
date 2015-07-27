@@ -11,7 +11,29 @@ require('tape')(function(test) {
         estimate: 500,
         completed: '2015-06-28' }),
     500,
-    'amount for a project completed in month is the estimate')
+    'estimate for project completed within month')
+
+  test.equal(
+    amount(
+      new Date('2015-06-01'),
+      new Date('2015-06-30'),
+      100,
+      { method: 'estimate',
+        estimate: 500,
+        completed: '2015-06-01' }),
+    500,
+    'estimate for project completed at start of month')
+
+  test.equal(
+    amount(
+      new Date('2015-06-01'),
+      new Date('2015-06-30'),
+      100,
+      { method: 'estimate',
+        estimate: 500,
+        completed: '2015-06-30' }),
+    500,
+    'estimate for project completed at end of month')
 
   test.equal(
     amount(

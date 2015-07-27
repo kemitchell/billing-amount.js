@@ -28,10 +28,10 @@ function divide(x, y) { return x / y }
 
 function spanAmount(from, through, span) {
   var start = new Date(span.start)
-  start = ( start < from ? from : start )
+  start = ( start <= from ? from : start )
 
   var end = new Date(span.end)
-  end = ( end > through ? through : end )
+  end = ( end >= through ? through : end )
 
   if (end <= start) {
     return 0 }
